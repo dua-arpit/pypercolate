@@ -82,8 +82,8 @@ def percolation_graph(graph, spanning_cluster=True):
     if spanning_cluster:
         perc_graph = graph.subgraph(
             [
-                node for node in graph.nodes_iter()
-                if 'span' not in graph.node[node]
+                node for node in graph.nodes()
+                if 'span' not in graph.nodes[node]
             ]
         )
     else:
@@ -233,15 +233,15 @@ def sample_states(
     if spanning_cluster:
         perc_graph = graph.subgraph(
             [
-                node for node in graph.nodes_iter()
-                if 'span' not in graph.node[node]
+                node for node in graph.nodes()
+                if 'span' not in graph.nodes[node]
             ]
         )
     else:
         perc_graph = graph
 
     # get a list of edges for easy access in later iterations
-    perc_edges = perc_graph.edges()
+    perc_edges = list(perc_graph.edges())
 
     # number of nodes N
     num_nodes = nx.number_of_nodes(perc_graph)
@@ -292,7 +292,7 @@ def sample_states(
         ]
 
     # get first node
-    max_cluster_root = next(perc_graph.nodes_iter())
+    max_cluster_root = list(perc_graph.nodes())[0]
 
     # loop over all edges (n == 1..M)
     for n in range(num_edges):
@@ -920,9 +920,9 @@ def spanning_1d_chain(length):
     """
     ret = nx.grid_graph(dim=[int(length + 2)])
 
-    ret.node[0]['span'] = 0
+    ret.nodes[0]['span'] = 0
     ret[0][1]['span'] = 0
-    ret.node[length + 1]['span'] = 1
+    ret.nodes[length + 1]['span'] = 1
     ret[length][length + 1]['span'] = 1
 
     return ret
@@ -955,11 +955,11 @@ def spanning_2d_grid(length):
 
     for i in range(length):
         # side 0
-        ret.node[(0, i)]['span'] = 0
+        ret.nodes[(0, i)]['span'] = 0
         ret[(0, i)][(1, i)]['span'] = 0
 
         # side 1
-        ret.node[(length + 1, i)]['span'] = 1
+        ret.nodes[(length + 1, i)]['span'] = 1
         ret[(length + 1, i)][(length, i)]['span'] = 1
 
     return ret
